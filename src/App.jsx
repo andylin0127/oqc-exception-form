@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
-// import { readOqcByDate, saveOqc } from './services/oqcService';
+import { readOqcByDate, saveOqc } from './services/oqcService';
 
 // const NG_OPTIONS = ['阻焊偏移', '孔銅不足', '表面刮傷', '立碑', '短路', '開路'];
 
@@ -19,27 +19,36 @@ export default function App() {
     qa: '',
     product: '',
     code: '',
-    counts: '',
+    ngCounts: '',
     remark: '',
   });
-  const [customNG, setCustomNG] = useState('');
+
   const [recordsOfDay, setRecordsOfDay] = useState([]);
 
-  const totalNG = useMemo(
-    () => Object.values(form.counts).reduce((a, b) => a + (Number(b) || 0), 0),
-    [form.counts]
-  );
 
-  // 架接API連結IPC
-  // useEffect(() => {
-  //   readOqcByDate(form.date)
-  //     .then(setRecordsOfDay)
-  //     .catch(() => setRecordsOfDay([]));
-  // }, [form.date]);
+
+  //架接API連結IPC
+  useEffect(() => {
+    readOqcByDate(form.date)
+      .then(setRecordsOfDay)
+      .catch(() => setRecordsOfDay([]));
+  }, [form.date]);
 
   async function save() {
+    if (!form.qa.trim()) {
+      alert('請輸入QA人員代碼');
+      return;
+    }
     if (!form.product.trim()) {
       alert('請輸入產品型號');
+      return;
+    }
+    if (!form.code.trim()) {
+      alert('請輸入異常代碼');
+      return;
+    }
+    if (!form.ngCounts.trim()) {
+      alert('請輸入異常數量');
       return;
     }
     const record = {
@@ -48,8 +57,7 @@ export default function App() {
       qa: form.qa,
       product: form.product.trim(),
       code: form.code,
-      count: Number(form.counts[name] || 0),
-      total: totalNG,
+      ngCounts: form.ngCounts,
       remark: form.remark,
       createdAt: new Date().toISOString(),
     };
@@ -61,6 +69,15 @@ export default function App() {
       console.error(err);
       alert('儲存失敗：' + err.message);
     }
+    setForm({
+    date: todayYYYYMMDD(),
+    station: 'FQC-2Q',
+    qa: '',
+    product: '',
+    code: '',
+    ngCounts: '',
+    remark: '',
+  });
   }
 
   return (
@@ -141,9 +158,9 @@ export default function App() {
                 <div className="text-sm mb-1">異常數量</div>
                 <input
                   placeholder="123"
-                  value={form.counts}
+                  value={form.ngCounts}
                   onChange={(e) =>
-                    setForm((f) => ({ ...f, counts: e.target.value }))
+                    setForm((f) => ({ ...f, ngCounts: e.target.value }))
                   }
                   className="w-full border rounded-xl px-3 py-2"
                 />
@@ -194,7 +211,7 @@ export default function App() {
                 <tbody>
                   {recordsOfDay.map((r, i) => (
                     <tr key={i} className="border-t">
-                      <td className="p-2">{i}</td>
+                      <td className="p-2">{i+1}</td>
                       <td className="p-2 whitespace-nowrap">
                         {new Date(r.createdAt).toLocaleTimeString()}
                       </td>
@@ -202,7 +219,7 @@ export default function App() {
                       <td className="p-2">{r.qa}</td>
                       <td className="p-2">{r.product}</td>
                       <td className="p-2">{r.code}</td>
-                      <td className="p-2">{r.counts}</td>
+                      <td className="p-2">{r.ngCounts}</td>
                     </tr>
                   ))}
                 </tbody>
