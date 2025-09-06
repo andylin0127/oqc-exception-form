@@ -15,11 +15,17 @@ function todayYYYYMMDD() {
 export default function App() {
   const [form, setForm] = useState({
     date: todayYYYYMMDD(),
-    station: 'FQC-2Q',
+    station: '',
     qa: '',
     product: '',
     code: '',
     ngCounts: '',
+    totalpieces:'',
+    array:'',
+    pieces:'',
+    mrb:'',
+    dc:'',
+    lc:'',
     remark: '',
   });
 
@@ -35,22 +41,27 @@ export default function App() {
   }, [form.date]);
 
   async function save() {
-    if (!form.qa.trim()) {
-      alert('請輸入QA人員代碼');
-      return;
-    }
-    if (!form.product.trim()) {
-      alert('請輸入產品型號');
-      return;
-    }
-    if (!form.code.trim()) {
-      alert('請輸入異常代碼');
-      return;
-    }
-    if (!form.ngCounts.trim()) {
-      alert('請輸入異常數量');
-      return;
-    }
+if([
+  { key: "station", msg: "請選擇 工作站 / workstation" },
+  { key: "qa", msg: "請輸入 QA 人員代碼 / QA STAMP" },
+  { key: "product", msg: "請輸入 產品型號 / Product number" },
+  { key: "code", msg: "請輸入 異常代碼 / NG code" },
+  { key: "ngCounts", msg: "請輸入 NG 數量 / NG quantity" },
+  { key: "totalpieces", msg: "請輸入 總片數 / Total pieces" },
+  { key: "array", msg: "請輸入 合格片數 / OK array" },
+  { key: "pieces", msg: "請輸入 每片 pieces 數 / pieces of array" },
+  { key: "mrb", msg: "請輸入 重判數量 / MRB quantity" },
+  { key: "dc", msg: "請輸入 D/C " },
+  { key: "lc", msg: "請輸入 L/C " },
+].some(({ key, msg }) => {
+  if (!form[key]?.trim()) {
+    alert(msg);
+    return true; // 中斷
+  }
+})){
+  return
+}
+
     const record = {
       date: form.date,
       station: form.station,
@@ -58,6 +69,12 @@ export default function App() {
       product: form.product.trim(),
       code: form.code,
       ngCounts: form.ngCounts,
+      totalpieces:form.totalpieces,
+      array:form.array,
+      pieces:form.pieces,
+      mrb:form.mrb,
+      dc:form.dc,
+      lc:form.lc,
       remark: form.remark,
       createdAt: new Date().toISOString(),
     };
@@ -71,11 +88,17 @@ export default function App() {
     }
     setForm({
     date: todayYYYYMMDD(),
-    station: 'FQC-2Q',
     qa: '',
+    station:'',
     product: '',
     code: '',
     ngCounts: '',
+    totalpieces:'',
+    array:'',
+    pieces:'',
+    mrb:'',
+    dc:'',
+    lc:'',
     remark: '',
   });
   }
@@ -90,11 +113,12 @@ export default function App() {
       </header>
 
       <main className="mx-auto max-w-screen-lg px-4 md:px-6 lg:px-8 py-6 space-y-6">
-        <section className="grid md:grid-cols-3 gap-4">
+        <div className='text-center rounded-2xl bg-neutral-900 text-white'> 可透過 TAB 鍵，快速轉換並輸入！</div>
+        <section className="grid md:grid-cols-2 gap-4">
           <div className="md:col-span-2 bg-white rounded-2xl shadow p-4 space-y-4">
             <div className="grid sm:grid-cols-2 gap-3">
               <label className="block">
-                <div className="text-sm mb-1">日期</div>
+                <div className="text-sm mb-1">日期 / DATE</div>
                 <input
                   type="date"
                   value={form.date}
@@ -105,7 +129,7 @@ export default function App() {
                 />
               </label>
               <label className="block">
-                <div className="text-sm mb-1">站點</div>
+                <div className="text-sm mb-1">工作站 / workstation</div>
                 <select
                   value={form.station}
                   onChange={(e) =>
@@ -113,14 +137,17 @@ export default function App() {
                   }
                   className="w-full border rounded-xl px-3 py-2"
                 >
-                  <option>FQC-2Q</option>
-                  <option>VRS-1Q</option>
+                  <option value="" disabled hidden>請選擇站點</option>
+                  <option value="VRS-1Q">VRS-1Q</option>
+                  <option value="FQC-2Q">FQC-2Q</option>
                 </select>
               </label>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
               <label className="block">
                 <div className="text-sm mb-1">QA 人員 / QA STAMP</div>
                 <input
-                  placeholder="例如：CK"
+                  placeholder="例如/EX：CK"
                   value={form.qa}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, qa: e.target.value }))
@@ -128,12 +155,10 @@ export default function App() {
                   className="w-full border rounded-xl px-3 py-2"
                 />
               </label>
-            </div>
-            <div>
               <label className="block">
-                <div className="text-sm mb-1">產品型號</div>
+                <div className="text-sm mb-1">產品料號 / Product number</div>
                 <input
-                  placeholder="例如：PCB-ABC-123"
+                  placeholder="例如/EX：PCB-ABC-123"
                   value={form.product}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, product: e.target.value }))
@@ -144,9 +169,9 @@ export default function App() {
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
               <label className="block">
-                <div className="text-sm mb-1">異常代碼</div>
+                <div className="text-sm mb-1">NG 代碼 / NG code</div>
                 <input
-                  placeholder="例如：7012"
+                  placeholder="例如/EX：7012"
                   value={form.code}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, code: e.target.value }))
@@ -155,9 +180,9 @@ export default function App() {
                 />
               </label>
               <label className="block">
-                <div className="text-sm mb-1">異常數量</div>
+                <div className="text-sm mb-1">NG 數量 / NG quantity</div>
                 <input
-                  placeholder="123"
+                  placeholder="例如/EX：123"
                   value={form.ngCounts}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, ngCounts: e.target.value }))
@@ -166,7 +191,78 @@ export default function App() {
                 />
               </label>
             </div>
-
+            <div className="grid sm:grid-cols-3 gap-3">
+              <label className="block">
+                <div className="text-sm mb-1">總片數 / Total pieces</div>
+                <input
+                  placeholder="例如/EX：100"
+                  value={form.totalpieces}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, totalpieces: e.target.value }))
+                  }
+                  className="w-full border rounded-xl px-3 py-2"
+                />
+              </label>
+              <label className="block">
+                <div className="text-sm mb-1">合格片數 / OK array</div>
+                <input
+                  placeholder="例如/EX：50"
+                  value={form.array}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, array: e.target.value }))
+                  }
+                  className="w-full border rounded-xl px-3 py-2"
+                />
+              </label>
+              
+              <label className="block">
+                <div className="text-sm mb-1">每片數量 / pieces per array</div>
+                <input
+                  placeholder="例如/EX：5"
+                  value={form.pieces}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, pieces: e.target.value }))
+                  }
+                  className="w-full border rounded-xl px-3 py-2"
+                />
+              </label>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <label className="block">
+                <div className="text-sm mb-1">重工數 / MRB pieces</div>
+                <input
+                  placeholder="例如/EX：16"
+                  value={form.mrb}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, mrb: e.target.value }))
+                  }
+                  className="w-full border rounded-xl px-3 py-2"
+                />
+              </label>
+              <label className="block">
+                <div className="text-sm mb-1"> D / C </div>
+                <input
+                  placeholder="例如/EX：2533262"
+                  value={form.dc}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, dc: e.target.value }))
+                  }
+                  className="w-full border rounded-xl px-3 py-2"
+                />
+              </label>
+              
+              <label className="block">
+                <div className="text-sm mb-1"> L / C </div>
+                <input
+                  placeholder="例如/EX：262"
+                  value={form.lc}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, lc: e.target.value }))
+                  }
+                  className="w-full border rounded-xl px-3 py-2"
+                />
+              </label>
+            </div>
             <label className="block">
               <div className="text-sm mb-1">備註</div>
               <textarea
@@ -183,14 +279,15 @@ export default function App() {
               <div className="flex gap-2">
                 <button
                   onClick={save}
-                  className="border rounded-xl px-3 py-2 bg-neutral-900 text-white"
+                  className="border rounded-xl px-3 py-2 bg-neutral-900 text-white hover:text-neutral-900 hover:bg-white"
                 >
                   儲存紀錄
                 </button>
               </div>
             </div>
           </div>
-
+        </section>
+        <section>
           <aside className="bg-white rounded-2xl shadow p-4">
             <div className="text-sm font-medium mb-2">
               當日紀錄（{recordsOfDay.length} 筆）
@@ -206,6 +303,12 @@ export default function App() {
                     <th className="p-2">產品型號</th>
                     <th className="p-2">異常代碼</th>
                     <th className="p-2">異常數量</th>
+                    <th className="p-2">總片數</th>
+                    <th className="p-2">合格片數</th>
+                    <th className="p-2">每片數量</th>
+                    <th className="p-2">重工數</th>
+                    <th className="p-2">D / C</th>
+                    <th className="p-2">L / C</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -220,6 +323,12 @@ export default function App() {
                       <td className="p-2">{r.product}</td>
                       <td className="p-2">{r.code}</td>
                       <td className="p-2">{r.ngCounts}</td>
+                      <td className="p-2">{r.totalpieces}</td>
+                      <td className="p-2">{r.array}</td>
+                      <td className="p-2">{r.pieces}</td>
+                      <td className="p-2">{r.mrb}</td>
+                      <td className="p-2">{r.dc}</td>
+                      <td className="p-2">{r.lc}</td>
                     </tr>
                   ))}
                 </tbody>

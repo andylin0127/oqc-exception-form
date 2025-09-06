@@ -82,10 +82,17 @@ function parseCsv(text) {
       });
     out.push({
       date,
+      qa,
       station,
       product,
-      items,
-      total: Number(total || 0),
+      code,
+      ngCounts,
+      totalpieces,
+      array,
+      pieces,
+      mrb,
+      dc,
+      lc,
       remark,
       createdAt,
     });
