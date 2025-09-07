@@ -19,11 +19,23 @@ function csvHeader() {
   return "date,station,product,ngItems,total,remark,createdAt\n";
 }
 function toRow(r) {
-  const ngItems = (r.items || [])
-    .map((it) => `${it.name}:${it.count}`)
-    .join("|");
   return (
-    [r.date, r.station, r.product, ngItems, r.total, r.remark, r.createdAt]
+    [
+      r.date,
+      r.qa,
+      r.station,
+      r.product,
+      r.code,
+      r.ngCounts,
+      r.totalpieces,
+      r.array,
+      r.pieces,
+      r.mrb,
+      r.dc,
+      r.lc,
+      r.remark,
+      r.createdAt,
+    ]
       .map(escCSV)
       .join(",") + "\n"
   );
@@ -72,14 +84,22 @@ function parseCsv(text) {
       }
     }
     cols.push(cur);
-    const [date, station, product, ngItems, total, remark, createdAt] = cols;
-    const items = String(ngItems || "")
-      .split("|")
-      .filter(Boolean)
-      .map((s) => {
-        const [name, count] = s.split(":");
-        return { name, count: Number(count || 0) };
-      });
+    const [
+      date,
+      qa,
+      station,
+      product,
+      code,
+      ngCounts,
+      totalpieces,
+      array,
+      pieces,
+      mrb,
+      dc,
+      lc,
+      remark,
+      createdAt,
+    ] = cols;
     out.push({
       date,
       qa,
