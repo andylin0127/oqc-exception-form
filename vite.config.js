@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   const isElectron = mode === "electron"; // 有兩種狀態
 
   return {
+    plugins: [react(), tailwindcss()],
     base: isWeb ? "/你的-repo名稱/" : "./",
     build: {
       outDir: isWeb ? "docs" : "dist",
