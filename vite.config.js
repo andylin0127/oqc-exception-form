@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss()],
-    base: isWeb ? "/你的-repo名稱/" : "./",
+    base: isWeb ? "/oqc-exception-form/" : "./",
     build: {
       outDir: isWeb ? "docs" : "dist",
       emptyOutDir: true,
