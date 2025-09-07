@@ -8,7 +8,7 @@
     "dev": "concurrently -k -r -s first \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "dev:web": "vite",
     "electron": "electron .",
-    "build:web": "vite build",
+    "build:web": "vite build --mode web",
     "build:dir": "vite build && electron-builder -w dir --publish never",
     "build:zip": "vite build && electron-builder -w zip --publish never",
     "build:win": "vite build && electron-builder -w nsis --publish never"
