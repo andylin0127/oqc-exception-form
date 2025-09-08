@@ -16,7 +16,7 @@ function escCSV(s) {
   return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
 }
 function csvHeader() {
-  return "date,station,product,ngItems,total,remark,createdAt\n";
+  return "date,qa,station,product,code,ngCounts,totalpieces,array,pieces,mrb,dc,lc,remark,createdAt\n";
 }
 function toRow(r) {
   return (
@@ -48,7 +48,7 @@ function ymd(dateStr) {
   return `${y}-${m}-${dd}`;
 }
 function filePathByDate(dateStr) {
-  const dir = path.join(app.getPath("userData"), "oqc_csv");
+  const dir = path.join(app.getPath("desktop"), "oqc_csv");
   const file = path.join(dir, `${ymd(dateStr)}.csv`);
   return { dir, file };
 }
