@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <meta http-equiv="refresh" content="0; url=/oqc-exception-form/" />
+    <script>
+      (function(l) {
+        // 將 /oqc-exception-form/xxx 轉回到首頁並保留查詢與 hash
+        var repo = "/oqc-exception-form";
+        var path = l.pathname.startsWith(repo) ? l.pathname.slice(repo.length) : "/";
+        l.replace(repo + "/index.html" + (path ? "?p=" + encodeURIComponent(path) : "") + l.search + l.hash);
+      })(window.location);
+    </script>
+  </head>
+  <body>Redirecting…</body>
+</html>
