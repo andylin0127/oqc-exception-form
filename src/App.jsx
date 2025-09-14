@@ -40,8 +40,8 @@ export default function App() {
       .catch(() => setRecordsOfDay([]));
   }, [form.date]);
 
-  async function save() {
-if([
+async function save() {
+const invalid =[
   { key: "station", msg: "請選擇 工作站 / workstation" },
   { key: "qa", msg: "請輸入 QA 人員代碼 / QA STAMP" },
   { key: "product", msg: "請輸入 產品型號 / Product number" },
@@ -53,13 +53,11 @@ if([
   { key: "mrb", msg: "請輸入 重判數量 / MRB quantity" },
   { key: "dc", msg: "請輸入 D/C " },
   { key: "lc", msg: "請輸入 L/C " },
-].some(({ key, msg }) => {
-  if (!form[key]?.trim()) {
-    alert(msg);
-    return true; // 中斷
-  }
-})){
-  return
+].find(({ key }) => !form[key]?.trim());
+
+if (invalid) {
+  alert(invalid.msg);
+  return;
 }
 
     const record = {
@@ -88,17 +86,9 @@ if([
     }
     setForm({
     date: todayYYYYMMDD(),
-    qa: '',
-    station:'',
-    product: '',
     code: '',
     ngCounts: '',
-    totalpieces:'',
-    array:'',
-    pieces:'',
     mrb:'',
-    dc:'',
-    lc:'',
     remark: '',
   });
   }
