@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
-import { readOqcByDate, saveOqc } from './services/oqcService';
+import { readOqcByDate, saveOqc , showMessage  } from './services/oqcService';
+
 
 // const NG_OPTIONS = ['阻焊偏移', '孔銅不足', '表面刮傷', '立碑', '短路', '開路'];
 
@@ -56,7 +57,7 @@ const invalid =[
 ].find(({ key }) => !form[key]?.trim());
 
 if (invalid) {
-  alert(invalid.msg);
+  await showMessage({ type: 'warning', message: invalid.msg });
   return;
 }
 
@@ -76,21 +77,22 @@ if (invalid) {
       remark: form.remark,
       createdAt: new Date().toISOString(),
     };
-    try {
-      await saveOqc(record); // service：網站 or Electron
-      setRecordsOfDay(await readOqcByDate(form.date)); // 重新讀回顯示
-      alert('已儲存');
-    } catch (err) {
-      console.error(err);
-      alert('儲存失敗：' + err.message);
-    }
-    setForm({
-    date: todayYYYYMMDD(),
-    code: '',
-    ngCounts: '',
-    mrb:'',
-    remark: '',
-  });
+  try {
+    await saveOqc(record); // service 會在 electron/web 分支儲存
+    // 重新讀回顯示（你原本的 function）
+    setRecordsOfDay(await readOqcByDate(form.date));
+    await showMessage({ type: 'info', message: '已儲存' });
+  } catch (err) {
+    console.error(err);
+    await showMessage({ type: 'error', message: '儲存失敗：' + (err.message || err) });
+  }
+setForm(prev => ({
+  ...prev,  // 保留其他欄位
+  date: todayYYYYMMDD(),
+  code: '',
+  ngCounts: '',
+  remark: '',
+}));
   }
 
   return (

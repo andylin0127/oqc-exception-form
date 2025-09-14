@@ -17,6 +17,24 @@ export async function readOqcByDate(dateStr) {
   }
 }
 
+export async function showMessage(opts = {}) {
+  if (isElectron()) {
+    try {
+      // window.native.showMsg 會回傳一個 Promise（ipc invoke）
+      return await window.native.showMsg(opts);
+    } catch (err) {
+      // 如果 ipc 失敗，退回到 browser 的 alert 作為 fallback
+      console.error("native.showMsg failed:", err);
+      if (opts.message) alert(opts.message);
+      return { fallback: true };
+    }
+  } else {
+    // Web / 開發環境：你可以改成 toast，這裡簡單使用 alert
+    if (opts.message) alert(opts.message);
+    return { fallback: true };
+  }
+}
+
 /** 追加一筆紀錄到該日期檔 */
 export async function saveOqc(record) {
   if (isElectron()) {

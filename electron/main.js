@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -161,6 +161,17 @@ ipcMain.handle("native:read-oqc", async (_e, dateStr) => {
   } catch {
     return { file, rows: [] }; // 不存在就空
   }
+});
+ipcMain.handle("show-msg", async (_ev, opts = {}) => {
+  // opts: { type: 'info'|'warning'|'error', message: '...' }
+  const win = BrowserWindow.getFocusedWindow();
+  const { response } = await dialog.showMessageBox(win, {
+    type: opts.type || "none",
+    message: opts.message || "",
+    buttons: opts.buttons || ["OK"],
+    defaultId: 0,
+  });
+  return { response };
 });
 ipcMain.handle("native:save-oqc", async (_e, record) => {
   const { file } = filePathByDate(record.date);
